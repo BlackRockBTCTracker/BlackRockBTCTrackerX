@@ -1,10 +1,10 @@
 import tweepy
 
-# Cargar las claves desde las variables de entorno (GitHub Actions las provee)
-API_KEY = os.getenv("TWITTER_API_KEY")
-API_SECRET = os.getenv("TWITTER_API_SECRET")
-ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+# Credenciales de la API de Twitter (OAuth 1.0a)
+API_KEY = "fAtUAee6ERA07Yi4thoRKRmle"
+API_SECRET = "X96zLhhEoH5a5dilOOqAk1TjWBwB14qGNBiRz49jwJThNv2oTp"
+ACCESS_TOKEN = "1940561534935040001-AIJuV5SaMZKytQB2g2blXciBuS3E4T"
+ACCESS_TOKEN_SECRET = "HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs"
 
 def post_to_twitter(tweet_text, image_path):
     try:
