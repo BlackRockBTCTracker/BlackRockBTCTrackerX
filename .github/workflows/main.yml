@@ -2,7 +2,7 @@ name: BlackRock BTC Tracker
 
 on:
   schedule:
-    - cron: '0 13 * * *' # 7:00 am Costa Rica todos los días
+    - cron: '0 * * * *'  # Se ejecuta al inicio de cada hora, todos los días
   workflow_dispatch:
 
 jobs:
@@ -25,9 +25,9 @@ jobs:
 
     - name: Run script
       env:
-        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-        TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-        TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        TWITTER_API_KEY: fAtUAee6ERA07Yi4thoRKRmle
+        TWITTER_API_SECRET: X96zLhhEoH5a5dilOOqAk1TjWBwB14qGNBiRz49jwJThNv2oTp
+        TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
+        TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
       run: |
         python main.py
