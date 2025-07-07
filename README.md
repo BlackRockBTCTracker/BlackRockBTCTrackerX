@@ -1,27 +1,70 @@
-# Blackrock BTC Holdings Tracker
+# 🚀 Blackrock Bitcoin Holdings Tracker
 
-Este proyecto rastrea automáticamente las tenencias de Bitcoin (BTC) de Blackrock, genera una imagen con la información más reciente y la sube a una carpeta específica en Google Drive.
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tu-usuario/BlackrockBTCTracker/blackrock-tweet.yml?style=for-the-badge)
 
-## Características
+Sistema automatizado que rastrea las tenencias de Bitcoin (BTC) de Blackrock, genera imágenes con la información actualizada y las publica en Twitter de forma programada.
 
-- Web scraping de las tenencias de BTC de Blackrock
-- Generación automática de imágenes con diseño personalizado
-- Subida automática a Google Drive
-- Formato de imagen optimizado para redes sociales
-- Registro de datos históricos
+## 🌟 Características
 
-## Requisitos Previos
+- Monitoreo en tiempo real de las tenencias de BTC de Blackrock
+- Generación automática de imágenes con diseño profesional
+- Publicación automática en Twitter
+- Sistema de caché para mantener el seguimiento entre ejecuciones
+- Ejecución programada cada hora
+- Formato optimizado para redes sociales
 
-- Python 3.7 o superior
-- Cuenta de Google Cloud Platform
-- Habilitada la API de Google Drive
+## 🛠 Requisitos
 
-## Instalación
+- Python 3.10 o superior
+- Cuenta de desarrollador de Twitter (X)
+- Repositorio en GitHub para GitHub Actions
 
-1. Clona el repositorio:
+## 🚀 Configuración Rápida
+
+1. **Clona el repositorio**
    ```bash
-   git clone [URL_DEL_REPOSITORIO]
-   cd Blackrock-BTC-Holding-Tracker
+   git clone https://github.com/tu-usuario/BlackrockBTCTracker.git
+   cd BlackrockBTCTracker
+   ```
+
+2. **Configura las variables de entorno**
+   Crea un archivo `.env` en la raíz del proyecto con tus credenciales de Twitter:
+   ```
+   TWITTER_API_KEY=tu_api_key
+   TWITTER_API_SECRET=tu_api_secret
+   TWITTER_ACCESS_TOKEN=tu_access_token
+   TWITTER_ACCESS_TOKEN_SECRET=tu_access_token_secret
+   ```
+
+3. **Instala las dependencias**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Ejecuta el script localmente**
+   ```bash
+   python main.py
+   ```
+
+## ⚙️ Configuración de GitHub Actions
+
+El flujo de trabajo está configurado para ejecutarse automáticamente cada hora. No se requiere configuración adicional.
+
+## 📊 Estructura del Proyecto
+
+- `main.py` - Punto de entrada principal
+- `tweet_uploader.py` - Manejo de la API de Twitter
+- `image_generator.py` - Generación de imágenes
+- `storage.py` - Manejo del caché de valores
+- `.github/workflows/` - Configuración de GitHub Actions
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Por favor, abre un issue primero para discutir los cambios propuestos.
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
    ```
 
 2. Instala las dependencias:
