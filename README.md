@@ -1,5 +1,7 @@
 # 🚀 Blackrock Bitcoin Holdings Tracker
 
+[![BlackRock BTC Tracker](https://github.com/BlackRockBTCTracker/BlackRockBTCTrackerX/actions/workflows/main.yml/badge.svg)](https://github.com/BlackRockBTCTracker/BlackRockBTCTrackerX/actions/workflows/main.yml)
+
 Sistema automatizado que rastrea las tenencias de Bitcoin (BTC) de Blackrock, genera imágenes con la información actualizada y las publica en Twitter de forma programada.
 
 ## 🌟 Características
