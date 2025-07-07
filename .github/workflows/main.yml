@@ -18,6 +18,13 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Cache last BTC value
+      id: cache-last-value
+      uses: actions/cache@v3
+      with:
+        path: last_value.txt
+        key: last-btc-value
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -30,4 +37,18 @@ jobs:
         TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
         TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
       run: |
+        # Verificar si el archivo de caché existe
+        if [ -f last_value.txt ]; then
+          echo "✅ Valor anterior encontrado en caché"
+          echo "Último valor: $(cat last_value.txt)"
+        else
+          echo "ℹ️ No se encontró valor anterior, será la primera ejecución"
+        fi
+        
+        # Ejecutar el script
         python main.py
+        
+        # El archivo last_value.txt se guardará automáticamente en caché
+        if [ -f last_value.txt ]; then
+          echo "✅ Valor guardado para la próxima ejecución: $(cat last_value.txt)"
+        fi
