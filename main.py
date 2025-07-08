@@ -11,13 +11,14 @@ def run_blackrock_bot():
         btc, usd, change, date = get_blackrock_data()
         print(f"🔍 Valor actual BTC: {btc}, USD: {usd}")
 
-        # Leer último BTC guardado
-        last_btc = read_last_value()
-        print(f"🔍 Último BTC guardado: {last_btc}")
+        # Leer última fecha guardada
+        last_date = read_last_value()
+        print(f"🔍 Última fecha guardada: {last_date}")
+        print(f"📅 Fecha actual: {date}")
 
-        # Comparar con el último valor
-        if last_btc == btc:
-            print("ℹ️ No hay cambios en el valor, no se genera imagen ni se publica tweet.")
+        # Comparar con la última fecha
+        if last_date == date:
+            print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
             return
 
         # Crear directorio de imágenes si no existe
@@ -43,8 +44,8 @@ def run_blackrock_bot():
         # Publicar el tweet con la imagen
         post_to_twitter(message, output_path)
 
-        # Guardar el nuevo BTC
-        write_last_value(btc)
+        # Guardar la nueva fecha
+        write_last_value(date)
 
         print("✅ Imagen generada y tweet publicado exitosamente.")
 
