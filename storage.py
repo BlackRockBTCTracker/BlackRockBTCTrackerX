@@ -2,10 +2,10 @@ from pathlib import Path
 
 def read_last_value():
     """
-    Lee el último valor de BTC guardado en el archivo local.
+    Lee la última fecha guardada en el archivo local.
     
     Returns:
-        str or None: El último valor guardado, o None si no existe.
+        str or None: La última fecha guardada, o None si no existe.
     """
     try:
         file_path = Path("last_value.txt")
@@ -17,10 +17,10 @@ def read_last_value():
 
 def write_last_value(value):
     """
-    Guarda el último valor de BTC en el archivo local.
+    Guarda la última fecha en el archivo local.
     
     Args:
-        value: El valor a guardar (se convertirá a string).
+        value: La fecha a guardar (se convertirá a string).
     """
     if value is None:
         print("⚠️ Intento de guardar un valor nulo")
