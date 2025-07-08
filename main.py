@@ -11,15 +11,19 @@ def run_blackrock_bot():
         btc, usd, change, date = get_blackrock_data()
         print(f"🔍 Valor actual BTC: {btc}, USD: {usd}")
 
-        # Leer última fecha guardada
-        last_date = read_last_value()
-        print(f"🔍 Última fecha guardada: {last_date}")
+        # Leer último valor guardado (puede ser fecha o valor antiguo)
+        last_value = read_last_value()
+        print(f"🔍 Último valor guardado: {last_value}")
         print(f"📅 Fecha actual: {date}")
 
-        # Comparar con la última fecha
-        if last_date == date:
-            print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
-            return
+        # Si el último valor es un número (formato antiguo) o si la fecha es diferente
+        if last_value and (last_value.replace(',', '').replace('.', '').isdigit() or last_value == date):
+            if last_value == date:
+                print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
+                return
+            print("ℹ️ Se detectó un formato antiguo de datos, se procederá a actualizar.")
+        else:
+            print("ℹ️ No se encontró una fecha válida, se procederá a publicar.")
 
         # Crear directorio de imágenes si no existe
         output_dir = 'output_images'
