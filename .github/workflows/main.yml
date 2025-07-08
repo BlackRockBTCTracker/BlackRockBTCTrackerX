@@ -18,12 +18,12 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Cache last BTC value
-      id: cache-last-value
+    - name: Cache last date
+      id: cache-last-date
       uses: actions/cache@v3
       with:
         path: last_value.txt
-        key: last-btc-value
+        key: last-btc-date-v1  # Versión actualizada para forzar nuevo caché
 
     - name: Install dependencies
       run: |
