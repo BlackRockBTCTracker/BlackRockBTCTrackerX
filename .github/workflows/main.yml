@@ -31,6 +31,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run script
+      id: script
       env:
         TWITTER_API_KEY: fAtUAee6ERA07Yi4thoRKRmle
         TWITTER_API_SECRET: X96zLhhEoH5a5dilOOqAk1TjWBwB14qGNBiRz49jwJThNv2oTp
@@ -51,17 +52,14 @@ jobs:
         # Mostrar el nuevo valor
         if [ -f last_value.txt ]; then
           echo "✅ Nueva fecha guardada: $(cat last_value.txt)"
-          
-          # Save the updated file to cache
-          echo "💾 Guardando en caché el nuevo valor..."
-          echo "cache-hit=true" >> $GITHUB_OUTPUT
+          echo "should-save-cache=true" >> $GITHUB_OUTPUT
         else
           echo "❌ ERROR: No se pudo guardar la fecha"
           exit 1
         fi
-        
+
     - name: Save date to cache
-      if: steps.cache-last-date.outputs.cache-hit != 'true' || steps.cache-last-date.outputs.cache-hit == ''
+      if: steps.script.outputs.should-save-cache == 'true'
       uses: actions/cache/save@v3
       with:
         path: last_value.txt
