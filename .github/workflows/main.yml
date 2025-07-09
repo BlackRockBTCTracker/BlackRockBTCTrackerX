@@ -37,18 +37,31 @@ jobs:
         TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
         TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
       run: |
+        # Mostrar estado inicial del directorio
+        echo "📂 Contenido del directorio antes de ejecutar el script:"
+        ls -la
+        
         # Verificar si el archivo de caché existe
         if [ -f last_value.txt ]; then
           echo "✅ Valor anterior encontrado en caché"
-          echo "Último valor: $(cat last_value.txt)"
+          echo "📄 Contenido de last_value.txt: $(cat last_value.txt)"
         else
           echo "ℹ️ No se encontró valor anterior, será la primera ejecución"
         fi
         
         # Ejecutar el script
+        echo "🚀 Ejecutando script..."
         python main.py
         
-        # El archivo last_value.txt se guardará automáticamente en caché
+        # Verificar el archivo después de la ejecución
+        echo "\n📂 Contenido del directorio después de ejecutar el script:"
+        ls -la
+        
         if [ -f last_value.txt ]; then
-          echo "✅ Valor guardado para la próxima ejecución: $(cat last_value.txt)"
+          echo "✅ Valor actual en last_value.txt: $(cat last_value.txt)"
+          echo "📝 Guardando en caché para la próxima ejecución..."
+          # Forzar la escritura del archivo
+          echo "$(cat last_value.txt)" > last_value.txt
+        else
+          echo "❌ ERROR: No se encontró last_value.txt después de ejecutar el script"
         fi
