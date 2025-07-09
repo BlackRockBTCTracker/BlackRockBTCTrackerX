@@ -16,14 +16,15 @@ def run_blackrock_bot():
         print(f"🔍 Último valor guardado: {last_value}")
         print(f"📅 Fecha actual: {date}")
 
-        # Si el último valor es un número (formato antiguo) o si la fecha es diferente
-        if last_value and (last_value.replace(',', '').replace('.', '').isdigit() or last_value == date):
-            if last_value == date:
-                print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
-                return
-            print("ℹ️ Se detectó un formato antiguo de datos, se procederá a actualizar.")
+        # Verificar si la fecha es la misma que la última guardada
+        if last_value == date:
+            print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
+            return
+            
+        if last_value:
+            print(f"ℹ️ Nueva fecha detectada: {date} (anterior: {last_value})")
         else:
-            print("ℹ️ No se encontró una fecha válida, se procederá a publicar.")
+            print("ℹ️ Primera ejecución o no se encontró fecha anterior, se procederá a publicar.")
 
         # Crear directorio de imágenes si no existe
         output_dir = 'output_images'
