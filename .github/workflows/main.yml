@@ -27,7 +27,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: last_value.txt
-        key: last-btc-date-${{ steps.date.outputs.date }}
+        key: last-btc-date-v1
+        restore-keys: |
+          last-btc-date-
 
     - name: Install dependencies
       run: |
@@ -62,11 +64,12 @@ jobs:
         ls -la
         
         if [ -f last_value.txt ]; then
-          echo "✅ Valor actual en last_value.txt: $(cat last_value.txt)"
+          current_value=$(cat last_value.txt)
+          echo "✅ Valor actual en last_value.txt: $current_value"
           echo "📝 Guardando en caché para la próxima ejecución..."
-          # Forzar la escritura del archivo con la fecha actual
-          echo "$(date +'%b %d, %Y')" > last_value.txt
-          echo "✅ Nuevo valor forzado en last_value.txt: $(cat last_value.txt)"
+          # Mantener el valor que ya tiene el archivo (la fecha de la página web)
+          echo "✅ Valor guardado en caché: $current_value"
         else
           echo "❌ ERROR: No se encontró last_value.txt después de ejecutar el script"
+          exit 1
         fi
