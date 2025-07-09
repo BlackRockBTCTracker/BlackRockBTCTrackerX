@@ -47,7 +47,7 @@ def run_blackrock_bot():
         )
 
         # Publicar el tweet con la imagen
-        post_to_twitter(message, output_path)
+        #post_to_twitter(message, output_path)
 
         # Guardar la nueva fecha
         write_last_value(date)
