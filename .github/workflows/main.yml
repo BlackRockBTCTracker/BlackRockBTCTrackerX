@@ -23,9 +23,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: last_value.txt
-        key: last-btc-date-v1-${{ github.sha }}
-        restore-keys: |
-          last-btc-date-v1-
+        key: last-btc-date-${{ github.sha }}
 
     - name: Install dependencies
       run: |
@@ -65,7 +63,4 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: last_value.txt
-        key: last-btc-date-v1-${{ github.sha }}
-        # Usamos restore-keys para permitir la restauración de versiones anteriores
-        restore-keys: |
-          last-btc-date-v1-
+        key: last-btc-date-${{ github.sha }}
