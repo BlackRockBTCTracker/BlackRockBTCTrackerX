@@ -37,14 +37,9 @@ jobs:
         TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
         TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
       run: |
-        # Mostrar estado inicial del directorio
-        echo "📂 Contenido del directorio antes de ejecutar el script:"
-        ls -la
-        
         # Verificar si el archivo de caché existe
         if [ -f last_value.txt ]; then
-          echo "✅ Valor anterior encontrado en caché"
-          echo "📄 Contenido de last_value.txt: $(cat last_value.txt)"
+          echo "📄 Última fecha guardada: $(cat last_value.txt)"
         else
           echo "ℹ️ No se encontró valor anterior, será la primera ejecución"
         fi
@@ -53,14 +48,10 @@ jobs:
         echo "🚀 Ejecutando script..."
         python main.py
         
-        # Verificar el archivo después de la ejecución
-        echo "\n📂 Contenido del directorio después de ejecutar el script:"
-        ls -la
-        
+        # Mostrar el nuevo valor
         if [ -f last_value.txt ]; then
-          current_value=$(cat last_value.txt)
-          echo "✅ Valor guardado en last_value.txt: $current_value"
+          echo "✅ Nueva fecha guardada: $(cat last_value.txt)"
         else
-          echo "❌ ERROR: No se encontró last_value.txt después de ejecutar el script"
+          echo "❌ ERROR: No se pudo guardar la fecha"
           exit 1
         fi
