@@ -54,7 +54,7 @@ jobs:
           
           # Save the updated file to cache
           echo "💾 Guardando en caché el nuevo valor..."
-          echo "::set-output name=cache-hit::$(echo true)"
+          echo "cache-hit=true" >> $GITHUB_OUTPUT
         else
           echo "❌ ERROR: No se pudo guardar la fecha"
           exit 1
