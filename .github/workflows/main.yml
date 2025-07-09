@@ -22,12 +22,12 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-    - name: Cache last date
+    - name: Restore last date from cache
       id: cache-last-date
-      uses: actions/cache@v3
+      uses: actions/cache/restore@v3
       with:
         path: last_value.txt
-        key: last-btc-date-v1
+        key: last-btc-date-${{ github.run_id }}
         restore-keys: |
           last-btc-date-
 
@@ -66,10 +66,25 @@ jobs:
         if [ -f last_value.txt ]; then
           current_value=$(cat last_value.txt)
           echo "✅ Valor actual en last_value.txt: $current_value"
+          
+          # Guardar en caché para la próxima ejecución
           echo "📝 Guardando en caché para la próxima ejecución..."
-          # Mantener el valor que ya tiene el archivo (la fecha de la página web)
+          echo "::set-output name=cache-hit::true"
+          
+          # Crear un archivo de caché con la fecha actual
+          echo "$current_value" > last_value.txt.cache
+          
           echo "✅ Valor guardado en caché: $current_value"
         else
           echo "❌ ERROR: No se encontró last_value.txt después de ejecutar el script"
           exit 1
         fi
+        
+    - name: Save to cache
+      uses: actions/cache/save@v3
+      if: steps.cache-last-date.outputs.cache-hit == 'true'
+      with:
+        path: last_value.txt.cache
+        key: last-btc-date-${{ github.run_id }}
+        restore-keys: |
+          last-btc-date-
