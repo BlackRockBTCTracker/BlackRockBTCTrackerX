@@ -22,7 +22,7 @@ jobs:
       id: cache-last-date
       uses: actions/cache@v3
       with:
-        path: last_value.txt
+        path: date_cache.txt
         key: last-btc-date-v1
 
     - name: Install dependencies
@@ -37,8 +37,16 @@ jobs:
         TWITTER_API_SECRET: X96zLhhEoH5a5dilOOqAk1TjWBwB14qGNBiRz49jwJThNv2oTp
         TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
         TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
-        LAST_DATE: ${{ steps.cache-last-date.outputs.cache-hit == 'true' && steps.cache-last-date.outputs.cache-value || '' }}
       run: |
+        # Leer la fecha del archivo de caché si existe
+        if [ -f "date_cache.txt" ]; then
+          LAST_DATE=$(cat date_cache.txt)
+          echo "📄 Última fecha en caché: $LAST_DATE"
+        else
+          LAST_DATE=""
+          echo "ℹ️ No se encontró fecha en caché, será la primera ejecución"
+        fi
+        
         # Mostrar la fecha en caché si existe
         if [ -n "$LAST_DATE" ]; then
           echo "📄 Última fecha en caché: $LAST_DATE"
@@ -46,20 +54,27 @@ jobs:
           echo "ℹ️ No se encontró fecha en caché, será la primera ejecución"
         fi
         
+        # Exportar la variable para que esté disponible para el script de Python
+        echo "LAST_DATE=$LAST_DATE" >> $GITHUB_ENV
+        
         # Ejecutar el script y capturar la salida
         echo "🚀 Ejecutando script..."
         OUTPUT=$(python main.py 2>&1)
         echo "$OUTPUT"  # Mostrar la salida
         
-        # Extraer la última fecha de la salida del script
-        if [[ "$OUTPUT" =~ ::set-output[[:space:]]name=LAST_DATE::(.*) ]]; then
-          LAST_DATE="${BASH_REMATCH[1]}"
-          echo "✅ Nueva fecha obtenida: $LAST_DATE"
-          # Guardar en caché
-          echo "$LAST_DATE" > date_cache.txt
-          echo "should-save-cache=true" >> $GITHUB_OUTPUT
+        # Verificar si hay una nueva fecha para guardar
+        if [ -f "$GITHUB_OUTPUT" ]; then
+          # Leer la fecha del archivo de salida
+          if NEW_DATE=$(grep '^LAST_DATE=' "$GITHUB_OUTPUT" | cut -d= -f2-); then
+            echo "✅ Nueva fecha obtenida: $NEW_DATE"
+            # Guardar en caché
+            echo "$NEW_DATE" > date_cache.txt
+            echo "should-save-cache=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️ No se generó nueva fecha para guardar en caché"
+          fi
         else
-          echo "ℹ️ No se generó nueva fecha para guardar en caché"
+          echo "ℹ️ No se encontró archivo de salida de GitHub Actions"
         fi
 
     - name: Save date to cache
