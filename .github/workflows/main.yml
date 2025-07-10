@@ -1,45 +1,86 @@
-from pathlib import Path
+name: BlackRock BTC Tracker
 
-def read_last_value():
-    """
-    Lee el último valor guardado en el archivo local.
-    
-    Returns:
-        str or None: El último valor guardado (puede ser fecha o valor numérico),
-                    o None si no existe o hay un error.
-    """
-    try:
-        file_path = Path("last_value.txt")
-        if file_path.is_file():
-            content = file_path.read_text(encoding='utf-8').strip()
-            if content:  # Solo devolver si hay contenido
-                return content
-    except Exception as e:
-        print(f"⚠️ Error al leer el archivo de valor anterior: {e}")
-    return None
+on:
+  schedule:
+    - cron: '0 * * * *'  # Se ejecuta al inicio de cada hora, todos los días
+  workflow_dispatch:
 
-def write_last_value(value):
-    """
-    Guarda el último valor (fecha) en el archivo local.
-    
-    Args:
-        value: El valor a guardar (se convertirá a string).
-    """
-    if value is None:
-        print("⚠️ Intento de guardar un valor nulo")
-        return
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Restore last date from cache
+      id: cache-last-date
+      uses: actions/cache@v3
+      with:
+        path: date_cache.txt
+        key: last-btc-date-v1
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run script
+      id: script
+      env:
+        TWITTER_API_KEY: fAtUAee6ERA07Yi4thoRKRmle
+        TWITTER_API_SECRET: X96zLhhEoH5a5dilOOqAk1TjWBwB14qGNBiRz49jwJThNv2oTp
+        TWITTER_ACCESS_TOKEN: AIJuV5SaMZKytQB2g2blXciBuS3E4T
+        TWITTER_ACCESS_TOKEN_SECRET: HuwKuloMtNujiOpZjue76kvZkYUdp9CSyiBKiW77cIKbs
+      run: |
+        set -e  # Detener en caso de error
         
-    value = str(value).strip()
-    if not value:
-        print("⚠️ Intento de guardar un valor vacío")
-        return
-    
-    # Guarda en el archivo local
-    try:
-        file_path = Path("last_value.txt")
-        file_path.parent.mkdir(parents=True, exist_ok=True)  # Asegura que el directorio exista
-        file_path.write_text(value, encoding='utf-8')
-        print(f"✅ Valor guardado en el archivo: {value}")
-    except Exception as e:
-        print(f"⚠️ No se pudo guardar el valor en el archivo: {e}")
-        raise
+        # Leer la fecha del archivo de caché si existe
+        if [ -f "date_cache.txt" ]; then
+          LAST_DATE=$(cat date_cache.txt)
+          echo "[DEBUG] Última fecha en caché: $LAST_DATE"
+        else
+          LAST_DATE=""
+          echo "[INFO] No se encontró fecha en caché, será la primera ejecución"
+        fi
+        
+        # Exportar la variable para el script de Python
+        echo "LAST_DATE=$LAST_DATE" >> $GITHUB_ENV
+        
+        # Crear directorio de salida si no existe
+        mkdir -p output_images
+        
+        # Ejecutar el script y mostrar la salida en tiempo real
+        echo "[INFO] Ejecutando script..."
+        python main.py || {
+          echo "[ERROR] El script falló con código de salida $?"
+          exit 1
+        }
+        
+        # Verificar si hay una nueva fecha para guardar
+        if [ -f "$GITHUB_OUTPUT" ] && grep -q '^LAST_DATE=' "$GITHUB_OUTPUT"; then
+          # Leer la fecha del archivo de salida
+          NEW_DATE=$(grep '^LAST_DATE=' "$GITHUB_OUTPUT" | cut -d= -f2-)
+          if [ -n "$NEW_DATE" ]; then
+            echo "[INFO] Nueva fecha obtenida: $NEW_DATE"
+            # Guardar en caché
+            echo "$NEW_DATE" > date_cache.txt
+            echo "should-save-cache=true" >> $GITHUB_OUTPUT
+          else
+            echo "[INFO] No se generó una fecha válida para guardar en caché"
+          fi
+        else
+          echo "[INFO] No se encontró nueva fecha en la salida del script"
+        fi
+
+    - name: Save date to cache
+      if: steps.script.outputs.should-save-cache == 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: date_cache.txt
+        key: last-btc-date-v1
