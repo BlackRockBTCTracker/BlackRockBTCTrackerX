@@ -1,29 +1,30 @@
 from scraper import get_blackrock_data
 from image_generator import generate_blackrock_image
 from tweet_uploader import post_to_twitter
+from storage import read_last_value, write_last_value
+
 import os
-import sys
 
 def run_blackrock_bot():
     try:
         # Obtener datos del scraper
         btc, usd, change, date = get_blackrock_data()
-        print(f"[INFO] Valor actual BTC: {btc}, USD: {usd}")
+        print(f"🔍 Valor actual BTC: {btc}, USD: {usd}")
 
-        # Leer último valor guardado de la caché
-        last_value = os.environ.get('LAST_DATE', '')
-        print(f"[DEBUG] Última fecha en caché: {last_value}")
-        print(f"[DEBUG] Fecha actual: {date}")
+        # Leer último valor guardado (puede ser fecha o valor antiguo)
+        last_value = read_last_value()
+        print(f"🔍 Último valor guardado: {last_value}")
+        print(f"📅 Fecha actual: {date}")
 
         # Verificar si la fecha es la misma que la última guardada
         if last_value == date:
-            print("[INFO] No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
+            print("ℹ️ No hay cambios en la fecha, no se genera imagen ni se publica tweet.")
             return
             
         if last_value:
-            print(f"[INFO] Nueva fecha detectada: {date} (anterior: {last_value})")
+            print(f"ℹ️ Nueva fecha detectada: {date} (anterior: {last_value})")
         else:
-            print("[INFO] Primera ejecución o no se encontró fecha anterior, se procederá a publicar.")
+            print("ℹ️ Primera ejecución o no se encontró fecha anterior, se procederá a publicar.")
 
         # Crear directorio de imágenes si no existe
         output_dir = 'output_images'
@@ -48,16 +49,13 @@ def run_blackrock_bot():
         # Publicar el tweet con la imagen
         #post_to_twitter(message, output_path)
 
-        # Guardar la fecha en el archivo de entorno para GitHub Actions
-        with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-            print(f'LAST_DATE={date}', file=fh)
+        # Guardar la nueva fecha
+        write_last_value(date)
 
-        print("[SUCCESS] Imagen generada y tweet publicado exitosamente.")
+        print("✅ Imagen generada y tweet publicado exitosamente.")
 
     except Exception as e:
-        print(f"[ERROR] {str(e)}")
-        # Asegurarse de que el script falle en caso de error
-        sys.exit(1)
+        print(f"❌ Error: {str(e)}")
 
 if __name__ == "__main__":
     run_blackrock_bot()
