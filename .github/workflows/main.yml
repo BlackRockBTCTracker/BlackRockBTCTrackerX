@@ -18,12 +18,19 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
     - name: Restore last date from cache
       id: cache-last-date
       uses: actions/cache@v3
       with:
         path: last_value.txt
-        key: last-btc-date
+        key: last-btc-date-${{ github.run_id }}
+        # Restaurar cualquier caché existente
+        restore-keys: |
+          last-btc-date-
 
     - name: Install dependencies
       run: |
@@ -55,3 +62,11 @@ jobs:
           echo "❌ ERROR: No se pudo guardar la fecha"
           exit 1
         fi
+    
+    - name: Save new date to cache
+      uses: actions/cache/save@v3
+      if: always()
+      with:
+        path: last_value.txt
+        key: last-btc-date-${{ steps.date.outputs.date }}
+        # Usamos una clave única basada en la fecha/hora actual
