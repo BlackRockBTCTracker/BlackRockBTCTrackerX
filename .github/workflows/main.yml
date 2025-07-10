@@ -23,7 +23,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: last_value.txt
-        key: last-btc-date-${{ github.sha }}
+        key: last-btc-date-v1
 
     - name: Install dependencies
       run: |
@@ -63,4 +63,4 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: last_value.txt
-        key: last-btc-date-${{ github.sha }}
+        key: last-btc-date-v1
