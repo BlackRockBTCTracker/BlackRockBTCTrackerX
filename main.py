@@ -1,8 +1,6 @@
 from scraper import get_blackrock_data
 from image_generator import generate_blackrock_image
 from tweet_uploader import post_to_twitter
-from storage import read_last_value, write_last_value
-
 import os
 
 def run_blackrock_bot():
@@ -11,9 +9,9 @@ def run_blackrock_bot():
         btc, usd, change, date = get_blackrock_data()
         print(f"🔍 Valor actual BTC: {btc}, USD: {usd}")
 
-        # Leer último valor guardado (puede ser fecha o valor antiguo)
-        last_value = read_last_value()
-        print(f"🔍 Último valor guardado: {last_value}")
+        # Leer último valor guardado de la caché
+        last_value = os.environ.get('LAST_DATE', '')
+        print(f"🔍 Última fecha en caché: {last_value}")
         print(f"📅 Fecha actual: {date}")
 
         # Verificar si la fecha es la misma que la última guardada
@@ -49,8 +47,8 @@ def run_blackrock_bot():
         # Publicar el tweet con la imagen
         #post_to_twitter(message, output_path)
 
-        # Guardar la nueva fecha
-        write_last_value(date)
+        # Guardar la fecha en el entorno para que GitHub Actions la guarde en caché
+        print(f"::set-output name=LAST_DATE::{date}")
 
         print("✅ Imagen generada y tweet publicado exitosamente.")
 
