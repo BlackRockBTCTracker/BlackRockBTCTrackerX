@@ -46,9 +46,10 @@ jobs:
           echo "ℹ️ No se encontró fecha en caché, será la primera ejecución"
         fi
         
-        # Ejecutar el script
+        # Ejecutar el script y capturar la salida
         echo "🚀 Ejecutando script..."
-        OUTPUT=$(python main.py 2>&1 | tee /dev/tty)
+        OUTPUT=$(python main.py 2>&1)
+        echo "$OUTPUT"  # Mostrar la salida
         
         # Extraer la última fecha de la salida del script
         if [[ "$OUTPUT" =~ ::set-output[[:space:]]name=LAST_DATE::(.*) ]]; then
