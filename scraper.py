@@ -22,10 +22,8 @@ def get_blackrock_data():
     date = date_element.find("span").get_text(strip=True) if date_element else "N/A"
     
     # Extraer el cambio numérico (puede ser positivo o negativo)
-    # Primero intentar con green (positivo), luego con red (negativo)
-    change_element = soup.find("td", class_="right-align green")
-    if not change_element:
-        change_element = soup.find("td", class_="right-align red")
+    # Buscar el primer elemento que tenga "right-align" y sea "green" o "red"
+    change_element = soup.find("td", class_=lambda x: x and "right-align" in x and ("green" in x or "red" in x))
     change = change_element.find("span").get_text(strip=True) if change_element else "N/A"
 
     # Cálculo no utilizado actualmente
