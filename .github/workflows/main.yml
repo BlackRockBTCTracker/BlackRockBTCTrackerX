@@ -22,16 +22,15 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-    - name: Restore data from cache
-      id: cache-data
+    - name: Restore last date from cache
+      id: cache-last-date
       uses: actions/cache@v3
       with:
-        path: |
-          last_value.txt
-          btc_history.json
-        key: btc-data-${{ github.run_id }}
+        path: last_value.txt
+        key: last-btc-date-${{ github.run_id }}
+        # Restaurar cualquier caché existente
         restore-keys: |
-          btc-data-
+          last-btc-date-
 
     - name: Install dependencies
       run: |
@@ -64,13 +63,13 @@ jobs:
           exit 1
         fi
     
-    - name: Save data to cache
+    - name: Save new date to cache
       uses: actions/cache/save@v3
       if: always()
       with:
-        path: |
-          last_value.txt
-          btc_history.json
-        key: btc-data-${{ steps.date.outputs.date }}
+        path: last_value.txt
+        key: last-btc-date-${{ steps.date.outputs.date }}
+        # Usamos una clave única basada en la fecha/hora actual
 
-        # Enhanced features activated 2025-12-18
+        # Reactivado el 2025-09-14
+        # Reactivado el 2025-12-18
