@@ -21,8 +21,11 @@ def get_blackrock_data():
     date_element = soup.find("td", class_="right-align", attrs={"sorttable_customkey": "1"})
     date = date_element.find("span").get_text(strip=True) if date_element else "N/A"
     
-    # Extraer el cambio numérico (1,044.9)
+    # Extraer el cambio numérico (puede ser positivo o negativo)
+    # Primero intentar con green (positivo), luego con red (negativo)
     change_element = soup.find("td", class_="right-align green")
+    if not change_element:
+        change_element = soup.find("td", class_="right-align red")
     change = change_element.find("span").get_text(strip=True) if change_element else "N/A"
 
     # Cálculo no utilizado actualmente
