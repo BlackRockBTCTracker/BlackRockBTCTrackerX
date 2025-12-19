@@ -16,25 +16,34 @@ def post_to_twitter(tweet_text, image_path):
             access_token_secret=ACCESS_TOKEN_SECRET
         )
         
-        # Configurar la API v1.1 para la subida de medios
-        auth = tweepy.OAuth1UserHandler(
-            API_KEY, 
-            API_SECRET,
-            ACCESS_TOKEN, 
-            ACCESS_TOKEN_SECRET
-        )
-        api_v1 = tweepy.API(auth)
-        
-        # 1. Subir la imagen
-        try:
-            media = api_v1.media_upload(image_path)
-            print("✅ Imagen subida correctamente a Twitter.")
-            
-            # 2. Publicar el tweet con la imagen
-            response = client.create_tweet(
-                text=tweet_text,
-                media_ids=[media.media_id]
+        # Si hay imagen, subirla primero
+        media_id = None
+        if image_path:
+            # Configurar la API v1.1 para la subida de medios
+            auth = tweepy.OAuth1UserHandler(
+                API_KEY, 
+                API_SECRET,
+                ACCESS_TOKEN, 
+                ACCESS_TOKEN_SECRET
             )
+            api_v1 = tweepy.API(auth)
+            
+            try:
+                media = api_v1.media_upload(image_path)
+                media_id = media.media_id
+                print("✅ Imagen subida correctamente a Twitter.")
+            except tweepy.TweepyException as e:
+                raise Exception(f"❌ Error al subir imagen: {str(e)}")
+        
+        # Publicar el tweet (con o sin imagen)
+        try:
+            if media_id:
+                response = client.create_tweet(
+                    text=tweet_text,
+                    media_ids=[media_id]
+                )
+            else:
+                response = client.create_tweet(text=tweet_text)
             
             print("✅ Tweet publicado exitosamente.")
             return response.data
